@@ -2,16 +2,10 @@
 #include <uart.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "functions.h"
 
 #define DISPLAY_HEIGHT 240
 #define DISPLAY_WIDTH 240
-
-void receive(uint8_t *msg, int *counter)
-{
-    while(!uart_has_data(UART0)); // wait for data
-    *msg = uart_recv(UART0);
-    (*counter)++;
-}
 
 void send(float output)
 {
@@ -49,6 +43,28 @@ int displaying(uint8_t input, uint8_t input2, uint8_t output, display_t display)
   return 0;
 } 
 
+void scroll_store(display_t display, screens color[][240])
+{
+  for(int i = 6; i < 236; i++)
+  {
+    for(int j = 20; j < 221; j++)
+    {
+      color[i][j] = color[i + 1][j];
+
+      color[i + 1][j].red = 0;
+      color[i + 1][j].green = 0;
+      color[i + 1][j].blue = 0;
+      if(j != 120){
+        if(color[i][j].red == 255 && color[i][j].green == 255 && color[i][j].blue == 255)
+        {
+          displayDrawPixel(&display, i, j, RGB_WHITE);
+          displayDrawPixel(&display, i + 1, j, RGB_BLACK);
+        }
+      }
+    }
+  }
+  return;
+}
 
 
 
