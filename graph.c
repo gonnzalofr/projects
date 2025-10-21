@@ -13,7 +13,7 @@
 
 void scroll(display_t display, struct screen color[][240]);
 void display_pixels(display_t display, struct screen color [][240]);
-
+//ubk pidjedep
 struct screen{
   uint8_t red;
   uint8_t green;
