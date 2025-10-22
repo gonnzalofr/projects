@@ -32,74 +32,57 @@ int main(void) {
   int y;
   char decision;
   char str[30];
+  int position[240];
   screens color[240][240];
+  memset(color, 0, sizeof(color));
   printf("Choose mode s/c/t/r: ");
   scanf(" %c", &decision);
+  
   switch (decision){
     case 's':
-      strcpy(str, "Sine Wave");
-      displayDrawString(&display, fx16G, 20, 40, (uint8_t*)str, RGB_WHITE);
-      for(degree = 0; degree <= 236; degree++)
-      {
-        radians = (degree * (M_PI / 180.0));
-        y = 120 + round(100 * sin(radians));
-        displayDrawPixel(&display, x, y, RGB_WHITE);
-        color[x][y].red = 255;
-        color[x][y].green = 255;
-        color[x][y].blue = 255;
-        if(x < 235)
-        {
-          x++;
-        }
-        
-      }
-      while (1){
-        degree = degree % 360;
-        radians = (degree * (M_PI / 180));
-        y = 120 + round(100 * sin(radians));
-        displayDrawPixel(&display, x, y, RGB_WHITE);
-        color[x][y].red = 255;
-        color[x][y].green = 255;
-        color[x][y].blue = 255;
-        degree++;
-        scroll_store(display, color);
-        for (int j = 20; j < 221; j++){
-          if(j != 120){
-            color[235][j].red = 0;
-            color[235][j].green = 0;
-            color[235][j].blue = 0;
-            }
-          }
-      }
-    return 0;
-    case 'c':
-    strcpy(str, "Cosine Wave");
-    displayDrawString(&display, fx16G, 20, 40, (uint8_t*)str, RGB_WHITE);
+    strcpy(str, "Sine Wave");
+    displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
     while(1) //for(degree = 0; degree <= 236; degree++)
         {
-          if(x < 234){
+        if(x < 234){
           radians = (degree * (M_PI / 180.0));
-          y = 120 - round(100 * cos(radians));
+          y = round(120 - (100 * sin(radians)));
+          position[x] = y;
           displayDrawPixel(&display, x, y, RGB_WHITE);
-          color[x][y].red = 255;
-          color[x][y].green = 255;
-          color[x][y].blue = 255;
           x++;
+          degree++;
         }
         else{
           radians = (degree * (M_PI / 180.0));
-          y = 120 - round(100 * cos(radians));
-          displayDrawPixel(&display, 235, y, RGB_WHITE);
-          color[235][y].red = 255;
-          color[235][y].green = 255;
-          color[235][y].blue = 255;
-          scroll_store(display, color);
+          y = round(120 - (100 * sin(radians)));
+          displayDrawPixel(&display, 234, y, RGB_WHITE);
+          position[234] = y;
+          scroll_store(display, position);
+          degree++;
         }
-        degree++;
-        if(degree > 360)
+        
+        }
+    case 'c':
+    strcpy(str, "Cosine Wave");
+    displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
+    while(1) //for(degree = 0; degree <= 236; degree++)
         {
-          degree = 0;
+        if(x < 234){
+          radians = (degree * (M_PI / 180.0));
+          y = round(120 - (100 * cos(radians)));
+          position[x] = y;
+          displayDrawPixel(&display, x, y, RGB_WHITE);
+          x++;
+          degree++;
         }
+        else{
+          radians = (degree * (M_PI / 180.0));
+          y = round(120 - (100 * cos(radians)));
+          position[234] = y;
+          scroll_store(display, position);
+          degree++;
+        }
+        
         }
         
       return 0;

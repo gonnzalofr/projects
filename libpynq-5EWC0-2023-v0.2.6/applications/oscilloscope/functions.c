@@ -43,26 +43,42 @@ int displaying(uint8_t input, uint8_t input2, uint8_t output, display_t display)
   return 0;
 } 
 
-void scroll_store(display_t display, screens color[][240])
+void scroll_store(display_t display, int position[])
 {
-  for(int i = 6; i < 236; i++)
+  for(int i = 5; i < 236; i++)
   {
-    for(int j = 20; j < 221; j++)
-    {
-      color[i][j] = color[i + 1][j];
-
-      color[i + 1][j].red = 0;
-      color[i + 1][j].green = 0;
-      color[i + 1][j].blue = 0;
-      if(j != 120){
-        if(color[i][j].red == 255 && color[i][j].green == 255 && color[i][j].blue == 255)
-        {
-          displayDrawPixel(&display, i, j, RGB_WHITE);
-          displayDrawPixel(&display, i + 1, j, RGB_BLACK);
-        }
+  
+      if(position[i] != 120){
+      displayDrawPixel(&display, i, position[i], RGB_BLACK);
       }
+      position[i] = position[i + 1];
+      displayDrawPixel(&display, i, position[i], RGB_WHITE);
     }
-  }
+
+  /*for(int i = 5; i < 236; i++)
+  {
+    for(int j = 19; j < 221; j++)
+    {
+      if(j != 120){
+        if(color[i + 1][j].red == 255)
+        {
+          color[i][j] = color[i + 1][j];
+          color[i + 1][j].red = 0;
+          color[i + 1][j].green = 0;
+          color[i + 1][j].blue = 0;
+        
+          
+          if(color[i][j].red == 255 && color[i][j].green == 255 && color[i][j].blue == 255)
+          {
+            displayDrawPixel(&display, i, j, RGB_WHITE);
+            displayDrawPixel(&display, i + 1, j, RGB_BLACK);
+          }
+        }
+        }
+    }*/
+      
+      
+  
   return;
 }
 
