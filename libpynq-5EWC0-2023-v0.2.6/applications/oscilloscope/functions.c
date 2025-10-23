@@ -2,10 +2,12 @@
 #include <uart.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 #include "functions.h"
 
 #define DISPLAY_HEIGHT 240
 #define DISPLAY_WIDTH 240
+
 
 void send(float output)
 {
@@ -43,45 +45,59 @@ int displaying(uint8_t input, uint8_t input2, uint8_t output, display_t display)
   return 0;
 } 
 
-void scroll_store(display_t display, int position[])
+void scroll(display_t display, int position[])
 {
-  for(int i = 5; i < 236; i++)
+  for(int i = 6; i < 236; i++)
   {
   
       if(position[i] != 120){
-      displayDrawPixel(&display, i, position[i], RGB_BLACK);
+        displayDrawPixel(&display, i, position[i], RGB_BLACK);
+      }
+      if(position[i + 1] != 120){
+      displayDrawPixel(&display, i, position[i + 1], RGB_BLUE);
       }
       position[i] = position[i + 1];
-      displayDrawPixel(&display, i, position[i], RGB_WHITE);
-    }
 
-  /*for(int i = 5; i < 236; i++)
-  {
-    for(int j = 19; j < 221; j++)
-    {
-      if(j != 120){
-        if(color[i + 1][j].red == 255)
-        {
-          color[i][j] = color[i + 1][j];
-          color[i + 1][j].red = 0;
-          color[i + 1][j].green = 0;
-          color[i + 1][j].blue = 0;
-        
-          
-          if(color[i][j].red == 255 && color[i][j].green == 255 && color[i][j].blue == 255)
-          {
-            displayDrawPixel(&display, i, j, RGB_WHITE);
-            displayDrawPixel(&display, i + 1, j, RGB_BLACK);
-          }
-        }
-        }
-    }*/
-      
-      
-  
+    }
   return;
 }
 
+void scroll1(display_t display, int position1[])
+{
+  for(int i = 6; i < 236; i++)
+  { 
+      if(position1[i] != 120)
+      {
+        displayDrawPixel(&display, i, position1[i], RGB_BLACK);
+      }
+  
+      if(position1[i + 1] != 120){
+      displayDrawPixel(&display, i, position1[i + 1], RGB_RED);
+      }
+      position1[i] = position1[i + 1];
+    }
+  return;
+}
+
+void sine(display_t display, float ratio, int degree, int position[])
+{
+  int y;
+  float radians;
+  radians = ratio * (degree * (M_PI / 180.0));
+  y = round(120 - ((100 - (10 * ratio)) * sin(radians)));
+  position[234] = y;
+  scroll(display, position);
+}
+
+void cosine(display_t display, float ratio, int degree1, int position1[])
+{
+  int y;
+  float radians1;
+  radians1 = ratio * (degree1 * (M_PI / 180.0));
+  y = round(120 - ((100 - (10 * ratio)) * cos(radians1)));
+  position1[234] = y;
+  scroll1(display, position1);
+}
 
 
 

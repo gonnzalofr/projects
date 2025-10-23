@@ -10,7 +10,8 @@
 #define WINDOW_HEIGHT 240
 #define WINDOW_WIDTH 240
 
-int main(void) {
+int main(void) 
+{
   pynq_init();
 
   display_t display;
@@ -27,73 +28,151 @@ int main(void) {
   displayDrawLine(&display, 5, 0, 5, 239, RGB_WHITE);
   displayDrawLine(&display, 5, 120, 235, 120, RGB_WHITE);
   int degree = 0;
+  int degree1 = 0;
   double radians = 0;
+  double radians1 = 0;
   int x = 6;
   int y;
+  int y1;
+  float ratio;
+  int equations;
   char decision;
+  char decision1;
   char str[30];
   int position[240];
-  screens color[240][240];
-  memset(color, 0, sizeof(color));
-  printf("Choose mode s/c/t/r: ");
+  int position1[240];
+
+  printf("Number of equations: ");
+  scanf("%i", &equations);
+  printf("Choose mode s/c: ");
   scanf(" %c", &decision);
-  
-  switch (decision){
-    case 's':
-    strcpy(str, "Sine Wave");
-    displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
-    while(1) //for(degree = 0; degree <= 236; degree++)
-        {
-        if(x < 234){
-          radians = (degree * (M_PI / 180.0));
-          y = round(120 - (100 * sin(radians)));
-          position[x] = y;
-          displayDrawPixel(&display, x, y, RGB_WHITE);
-          x++;
-          degree++;
-        }
-        else{
-          radians = (degree * (M_PI / 180.0));
-          y = round(120 - (100 * sin(radians)));
-          displayDrawPixel(&display, 234, y, RGB_WHITE);
-          position[234] = y;
-          scroll_store(display, position);
-          degree++;
-        }
-        
-        }
-    case 'c':
-    strcpy(str, "Cosine Wave");
-    displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
-    while(1) //for(degree = 0; degree <= 236; degree++)
-        {
-        if(x < 234){
-          radians = (degree * (M_PI / 180.0));
-          y = round(120 - (100 * cos(radians)));
-          position[x] = y;
-          displayDrawPixel(&display, x, y, RGB_WHITE);
-          x++;
-          degree++;
-        }
-        else{
-          radians = (degree * (M_PI / 180.0));
-          y = round(120 - (100 * cos(radians)));
-          position[234] = y;
-          scroll_store(display, position);
-          degree++;
-        }
-        
-        }
-        
-      return 0;
-    case 't':
-      return 0;
-    case 'r':
-      return 0;
+  printf("Phase angle of first equation: ");
+  scanf("%i", &degree);
+  if(equations == 2){
+    printf("Choose mode 2 s/c: ");
+    scanf(" %c", &decision1);
+    printf("Phase angle of second equation: ");
+    scanf("%i", &degree1);
   }
+  else if(equations > 2)
+  {
+    printf("Can't manage more than two equations.\n");
+    return 0;
+  }
+  printf("Ratio: ");
+  scanf("%f", &ratio);
+  if(equations == 1){
+    switch (decision){
+      case 's':
+      strcpy(str, "Sine Wave");
+      displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
+      if(ratio < 10){
+        while(1) 
+        {
+          if(x < 234){
+            radians = ratio * (degree * (M_PI / 180.0));
+            y = round(120 - ((101 - ratio) * cos(radians)));
+            position[x] = y;
+            displayDrawPixel(&display, x, y, RGB_WHITE);
+            displayDrawPixel(&display, x, y + 1, RGB_WHITE);
+            x++;
+            degree++;
+          }
+          else{
+            radians = ratio * (degree * (M_PI / 180.0));
+            y = round(120 - ((101 - ratio) * sin(radians)));
+            position[234] = y;
+            scroll(display, position);
+            degree++;
+          }
+        }
+        break;
+      }
+      else{
+        while(1) 
+        {
+          if(x < 234){
+            radians = ratio * (degree * (M_PI / 180.0));
+            y = round(120 - ((101 - ratio) * sin(radians)));
+            position[x] = y;
+            displayDrawPixel(&display, x, y, RGB_WHITE);
+            displayDrawPixel(&display, x, y + 1, RGB_WHITE);
+            x++;
+            degree++;
+          }
+          else{
+            radians = ratio * (degree * (M_PI / 180.0));
+            y = round(120 - ((101 - ratio) * cos(radians)));
+            position[234] = y;
+            scroll1(display, position);
+            degree++;
+          }
+        }
+      }
+          
+      case 'c':
+      strcpy(str, "Cosine Wave");
+      displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
+        while(1) 
+        {
+          if(x < 234){
+            radians = ratio * (degree * (M_PI / 180.0));
+            y = round(120 - ((101 - ratio) * cos(radians)));
+            position[x] = y;
+            displayDrawPixel(&display, x, y, RGB_WHITE);
+            x++;
+            degree++;
+          }
+          else{
+            radians = ratio * (degree * (M_PI / 180.0));
+            y = round(120 - ((101 - ratio) * cos(radians)));
+            position[234] = y;
+            scroll1(display, position);
+            degree++;
+          }
+          
+        }
+
+      return 0;
+    }
+  }
+  else{
+      strcpy(str, "Cosine & Sine waves");
+      displayDrawString(&display, fx16G, 20, 20, (uint8_t*)str, RGB_WHITE);
+
+        while(1) 
+        {
+          if(x < 234){
+            radians1 = ratio * ((degree1) * (M_PI / 180.0));
+            y1 = round(120 - ((100 - (10 * ratio)) * cos(radians1)));
+            position1[x] = y1;
+            displayDrawPixel(&display, x, y1, RGB_RED);
+            radians = ratio * ((degree) * (M_PI / 180.0));
+            y = round(120 - ((100 - (10 * ratio)) * sin(radians)));
+            position[x] = y;
+            displayDrawPixel(&display, x, y, RGB_BLUE);
+            x++;
+            degree++;
+            degree1++;
+          }
+          else{
+            sine(display, ratio, degree, position);
+            cosine(display, ratio, degree1, position1);
+            degree++;
+            degree1++;
+          }
+
+        
+      }
+  }        
+  
+          
+
+
 
   pynq_destroy();
   return EXIT_SUCCESS;
-}
+} 
+
 
 
