@@ -7,6 +7,8 @@
 
 #define DISPLAY_HEIGHT 240
 #define DISPLAY_WIDTH 240
+float sin_lut[LUT_SIZE];
+float cos_lut[LUT_SIZE];
 
 
 void send(float output)
@@ -45,59 +47,76 @@ int displaying(uint8_t input, uint8_t input2, uint8_t output, display_t display)
   return 0;
 } 
 
-void scroll(display_t display, int position[])
+void scroll(display_t display, int position[], int y, int y1)
 {
   for(int i = 6; i < 236; i++)
   {
-  
-      if(position[i] != 120){
-        displayDrawPixel(&display, i, position[i], RGB_BLACK);
-      }
-      if(position[i + 1] != 120){
-      displayDrawPixel(&display, i, position[i + 1], RGB_BLUE);
-      }
-      position[i] = position[i + 1];
-
+    if(position[i] != 120){
+      displayDrawPixel(&display, i, position[i], RGB_BLACK);
     }
+  }
+
+  memmove(&position[6], &position[8], 230 * sizeof(int));
+  position[234] = y;
+  position[235] = y1;
+
+  for(int i = 6; i < 236; i++)
+  {
+    if(position[i] != 120){
+      displayDrawPixel(&display, i, position[i], RGB_BLUE);  
+    }
+  }
   return;
 }
 
-void scroll1(display_t display, int position1[])
+void scroll1(display_t display, int position1[], int y, int y1)
 {
   for(int i = 6; i < 236; i++)
-  { 
-      if(position1[i] != 120)
-      {
-        displayDrawPixel(&display, i, position1[i], RGB_BLACK);
-      }
-  
-      if(position1[i + 1] != 120){
-      displayDrawPixel(&display, i, position1[i + 1], RGB_RED);
-      }
-      position1[i] = position1[i + 1];
+  {
+    if(position1[i] != 120){
+      displayDrawPixel(&display, i, position1[i], RGB_BLACK);
     }
+  }
+
+  memmove(&position1[6], &position1[8], 230 * sizeof(int));
+  position1[234] = y;
+  position1[235] = y1;
+
+  for(int i = 6; i < 236; i++)
+  {
+    if(position1[i] != 120){
+    displayDrawPixel(&display, i, position1[i], RGB_RED);  
+    }
+  }
   return;
 }
 
 void sine(display_t display, float ratio, int degree, int position[])
 {
   int y;
-  float radians;
-  radians = ratio * (degree * (M_PI / 180.0));
-  y = round(120 - ((100 - (10 * ratio)) * sin(radians)));
-  position[234] = y;
-  scroll(display, position);
+  int y1;
+  y = round(120 - ((100 - (10 * ratio)) * sin_lut[degree]));
+  y1 = round(120 - ((100 - (10 * ratio)) * sin_lut[degree + 1]));
+  scroll(display, position, y, y1);
 }
 
 void cosine(display_t display, float ratio, int degree1, int position1[])
 {
   int y;
-  float radians1;
-  radians1 = ratio * (degree1 * (M_PI / 180.0));
-  y = round(120 - ((100 - (10 * ratio)) * cos(radians1)));
-  position1[234] = y;
-  scroll1(display, position1);
+  int y1;
+  y = round(120 - ((100 - (10 * ratio)) * cos_lut[degree1]));
+  y1 = round(120 - ((100 - (10 * ratio)) * cos_lut[degree1 + 1]));
+  scroll1(display, position1, y, y1);
+}
+
+void init_math_lut(int ratio){
+  float rad;
+  for(int i = 0; i < LUT_SIZE; i++){
+    rad = ratio * (i * M_PI / 180.0f);
+    sin_lut[i] = sinf(rad);
+    cos_lut[i] = cosf(rad);
+  }
 }
 
 
-
+  
