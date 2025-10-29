@@ -49,43 +49,125 @@ int displaying(uint8_t input, uint8_t input2, uint8_t output, display_t display)
 
 void scroll(display_t display, int position[], int y, int y1)
 {
-  for(int i = 6; i < 236; i++)
+  int temp;
+  int start_y;
+  int end_y;
+  /*for(int i = 6; i < 236; i++)
   {
     if(position[i] != 120){
       displayDrawPixel(&display, i, position[i], RGB_BLACK);
     }
-  }
+  }*/
+  for(int i = 6; i < 236; i++)
+  {
+    start_y = position[i];
+    end_y = position[i + 1];
+
+    if(start_y > end_y)
+    {
+      temp = start_y;
+      start_y = end_y;
+      end_y = temp;
+    }
+  
+    for(int j = start_y; j <= end_y + 1; j++)
+    {
+      if(j != 120){
+      displayDrawPixel(&display, i, j, RGB_BLACK);
+      }
+    }
+ }
 
   memmove(&position[6], &position[8], 230 * sizeof(int));
   position[234] = y;
   position[235] = y1;
 
-  for(int i = 6; i < 236; i++)
+  /*for(int i = 6; i < 236; i++)
   {
     if(position[i] != 120){
       displayDrawPixel(&display, i, position[i], RGB_BLUE);  
     }
   }
-  return;
+  return;*/
+
+  for(int i = 6; i < 235; i++)
+  {
+    start_y = position[i];
+    end_y = position[i + 1];
+    if(start_y > end_y)
+    {
+      temp = start_y;
+      start_y = end_y; 
+      end_y = temp;
+    }
+    for(int j = start_y; j < end_y; j++)
+    {
+      if(j != 120)
+      {
+        displayDrawPixel(&display, i, j, RGB_BLUE);
+      }
+    }
+  }
 }
 
 void scroll1(display_t display, int position1[], int y, int y1)
 {
-  for(int i = 6; i < 236; i++)
+  int temp;
+  int start_y;
+  int end_y;
+  /*for(int i = 6; i < 236; i++)
   {
     if(position1[i] != 120){
       displayDrawPixel(&display, i, position1[i], RGB_BLACK);
     }
-  }
+  }*/
+//removes old pixels
+  for(int i = 6; i < 236; i++)
+  {
+    start_y = position1[i];
+    end_y = position1[i + 1];
 
+    if(start_y > end_y)
+    {
+      temp = start_y;
+      start_y = end_y;
+      end_y = temp;
+    }
+  
+    for(int j = start_y; j <= end_y + 1; j++)
+    {
+      if(j != 120){
+      displayDrawPixel(&display, i, j, RGB_BLACK);
+      }
+    }
+ }
   memmove(&position1[6], &position1[8], 230 * sizeof(int));
   position1[234] = y;
   position1[235] = y1;
 
-  for(int i = 6; i < 236; i++)
+  /*for(int i = 6; i < 236; i++)
   {
     if(position1[i] != 120){
     displayDrawPixel(&display, i, position1[i], RGB_RED);  
+    }
+  }*/
+
+  for(int i = 6; i < 235; i++)
+  {
+    start_y = position1[i];
+    end_y = position1[i + 1];
+    if(start_y > end_y)
+    {
+      temp = start_y;
+      start_y = end_y; 
+      end_y = temp;
+    }
+    for(int j = start_y; j < end_y; j++)
+    {
+      if(j != 120)
+      {
+        displayDrawPixel(&display, i, j, RGB_RED);
+      }
     }
   }
   return;
@@ -95,8 +177,8 @@ void sine(display_t display, float ratio, int degree, int position[])
 {
   int y;
   int y1;
-  y = round(120 - ((100 - (10 * ratio)) * sin_lut[degree]));
-  y1 = round(120 - ((100 - (10 * ratio)) * sin_lut[degree + 1]));
+  y = round(120 - ((100 - (5 * ratio)) * sin_lut[degree]));
+  y1 = round(120 - ((100 - (5 * ratio)) * sin_lut[degree + 1]));
   scroll(display, position, y, y1);
 }
 
@@ -104,8 +186,8 @@ void cosine(display_t display, float ratio, int degree1, int position1[])
 {
   int y;
   int y1;
-  y = round(120 - ((100 - (10 * ratio)) * cos_lut[degree1]));
-  y1 = round(120 - ((100 - (10 * ratio)) * cos_lut[degree1 + 1]));
+  y = round(120 - ((100 - (5 * ratio)) * cos_lut[degree1]));
+  y1 = round(120 - ((100 - (5 * ratio)) * cos_lut[degree1 + 1]));
   scroll1(display, position1, y, y1);
 }
 

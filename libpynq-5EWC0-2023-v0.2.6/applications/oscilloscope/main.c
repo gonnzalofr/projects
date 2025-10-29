@@ -142,12 +142,23 @@ int main(void)
         while(1) 
         {
           if(x < 236){
-            y1 = round(120 - ((100 - (10 * ratio)) * cos_lut[degree1]));
+            y1 = round(120 - ((100 - (5 * ratio)) * cos_lut[degree1]));
             position1[x] = y1;
-            displayDrawPixel(&display, x, y1, RGB_RED);
-            y = round(120 - ((100 - (10 * ratio)) * sin_lut[degree]));
+            if(y1 != 120){
+              displayDrawPixel(&display, x, y1, RGB_RED);
+            }
+            do{
+              y1++;
+              if(y1 != 120){
+              displayDrawPixel(&display, x, y1, RGB_RED);
+              }
+            }while(y1 < round(120 - ((100 - (5 * ratio)) * cos_lut[degree1 + 1])));
+
+            y = round(120 - ((100 - (5 * ratio)) * sin_lut[degree]));
             position[x] = y;
+            if(y != 120){
             displayDrawPixel(&display, x, y, RGB_BLUE);
+            }
             x++;
             degree++;
             degree1++;
@@ -164,6 +175,7 @@ int main(void)
             cosine(display, ratio, degree1, position1);
             degree += 2;
             degree1 += 2;
+            sleep_msec(500);
           }
       }
   }        
